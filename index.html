@@ -2,108 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Portafolio | Pensamiento de Ingeniería</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>Snake - Naranjas</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            border: 2px solid black;
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
 
-<header class="encabezado">
-    <h1>Portafolio de Tareas</h1>
-    <p>Pensamiento de Ingeniería</p>
-</header>
+<h1>Snake 🍊</h1>
+<p>Usa las flechas del teclado</p>
 
-<main class="contenedor">
+<canvas id="juego" width="400" height="400"></canvas>
 
-    <!-- TAREA 1 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 1</div>
-        <h3>Tarea 1</h3>
-        <p>Desarrollo de un juego Snake básico utilizando HTML y JavaScript, donde la serpiente come naranjas.</p>
-        <ul>
-            <li>Programación</li>
-            <li>Pensamiento lógico</li>
-            <li>Tecnología</li>
-        </ul>
+<script>
+    const canvas = document.getElementById("juego");
+    const ctx = canvas.getContext("2d");
+    const tamaño = 20;
+    let direccion = "derecha";
+    let snake = [{ x: 200, y: 200 }];
+    let naranja = { x: 100, y: 100 };
 
-        <a href="snake.html" target="_blank">🎮 Jugar Snake 🍊</a>
-    </section>
+    document.addEventListener("keydown", cambiarDireccion);
 
-    <!-- TAREA 2 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 2</div>
-        <h3>Tarea 2</h3>
-        <p>Descripción de la tarea realizada en la semana 2.</p>
-        <ul>
-            <li>Física</li>
-            <li>Ingeniería</li>
-        </ul>
-    </section>
+    function cambiarDireccion(evento) {
+        if (evento.key === "ArrowUp" && direccion !== "abajo") direccion = "arriba";
+        if (evento.key === "ArrowDown" && direccion !== "arriba") direccion = "abajo";
+        if (evento.key === "ArrowLeft" && direccion !== "derecha") direccion = "izquierda";
+        if (evento.key === "ArrowRight" && direccion !== "izquierda") direccion = "derecha";
+    }
 
-    <!-- TAREA 3 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 3</div>
-        <h3>Tarea 3</h3>
-        <p>Descripción de la tarea realizada en la semana 3.</p>
-        <ul>
-            <li>Programación</li>
-        </ul>
-    </section>
+    function dibujar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "green";
+        snake.forEach(parte => ctx.fillRect(parte.x, parte.y, tamaño, tamaño));
+        ctx.fillStyle = "orange";
+        ctx.fillRect(naranja.x, naranja.y, tamaño, tamaño);
+        moverSnake();
+    }
 
-    <!-- TAREA 4 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 4</div>
-        <h3>Tarea 4</h3>
-        <p>Descripción de la tarea realizada en la semana 4.</p>
-        <ul>
-            <li>Diseño</li>
-        </ul>
-    </section>
+    function moverSnake() {
+        let cabeza = { ...snake[0] };
+        if (direccion === "arriba") cabeza.y -= tamaño;
+        if (direccion === "abajo") cabeza.y += tamaño;
+        if (direccion === "izquierda") cabeza.x -= tamaño;
+        if (direccion === "derecha") cabeza.x += tamaño;
 
-    <!-- TAREA 5 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 5</div>
-        <h3>Tarea 5</h3>
-        <p>Descripción de la tarea realizada en la semana 5.</p>
-        <ul>
-            <li>Ingeniería</li>
-        </ul>
-    </section>
+        if (cabeza.x === naranja.x && cabeza.y === naranja.y) {
+            nuevaNaranja();
+        } else {
+            snake.pop();
+        }
+        snake.unshift(cabeza);
+    }
 
-    <!-- TAREA 6 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 6</div>
-        <h3>Tarea 6</h3>
-        <p>Descripción de la tarea realizada en la semana 6.</p>
-        <ul>
-            <li>Matemáticas</li>
-        </ul>
-    </section>
+    function nuevaNaranja() {
+        naranja.x = Math.floor(Math.random() * 20) * tamaño;
+        naranja.y = Math.floor(Math.random() * 20) * tamaño;
+    }
 
-    <!-- TAREA 7 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 7</div>
-        <h3>Tarea 7</h3>
-        <p>Descripción de la tarea realizada en la semana 7.</p>
-        <ul>
-            <li>Tecnología</li>
-        </ul>
-    </section>
-
-    <!-- TAREA 8 -->
-    <section class="tarjeta">
-        <div class="imagen-placeholder">Imagen Tarea 8</div>
-        <h3>Tarea 8</h3>
-        <p>Proyecto final integrando los conocimientos adquiridos durante el curso.</p>
-        <ul>
-            <li>Proyecto Final</li>
-        </ul>
-    </section>
-
-</main>
-
-<footer class="pie">
-    <p>Tu Nombre | Pensamiento de Ingeniería</p>
-</footer>
+    setInterval(dibujar, 150);
+</script>
 
 </body>
 </html>
