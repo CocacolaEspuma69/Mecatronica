@@ -1,75 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Snake - Naranjas</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-
-        canvas {
-            border: 2px solid black;
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Mecatrónica - Tareas</title>
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
 
-<h1>Snake 🍊</h1>
-<p>Usa las flechas del teclado</p>
+    <h1>Proyecto Mecatrónica</h1>
 
-<canvas id="juego" width="400" height="400"></canvas>
+    <section>
+        <h2>Tarea 1 - Juego</h2>
+        <p>Haz clic abajo para jugar:</p>
+        <a href="snake.html">Ir al Juego (Snake)</a>
+    </section>
 
-<script>
-    const canvas = document.getElementById("juego");
-    const ctx = canvas.getContext("2d");
-    const tamaño = 20;
-    let direccion = "derecha";
-    let snake = [{ x: 200, y: 200 }];
-    let naranja = { x: 100, y: 100 };
+    <section>
+        <h2><a href="snake.html">Tarea 2</a></h2>
+        <p>Haz clic en el título para jugar.</p>
+        <img src="download.png" alt="Imagen Tarea 2" width="300">
+    </section>
 
-    document.addEventListener("keydown", cambiarDireccion);
-
-    function cambiarDireccion(evento) {
-        if (evento.key === "ArrowUp" && direccion !== "abajo") direccion = "arriba";
-        if (evento.key === "ArrowDown" && direccion !== "arriba") direccion = "abajo";
-        if (evento.key === "ArrowLeft" && direccion !== "derecha") direccion = "izquierda";
-        if (evento.key === "ArrowRight" && direccion !== "izquierda") direccion = "derecha";
-    }
-
-    function dibujar() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "green";
-        snake.forEach(parte => ctx.fillRect(parte.x, parte.y, tamaño, tamaño));
-        ctx.fillStyle = "orange";
-        ctx.fillRect(naranja.x, naranja.y, tamaño, tamaño);
-        moverSnake();
-    }
-
-    function moverSnake() {
-        let cabeza = { ...snake[0] };
-        if (direccion === "arriba") cabeza.y -= tamaño;
-        if (direccion === "abajo") cabeza.y += tamaño;
-        if (direccion === "izquierda") cabeza.x -= tamaño;
-        if (direccion === "derecha") cabeza.x += tamaño;
-
-        if (cabeza.x === naranja.x && cabeza.y === naranja.y) {
-            nuevaNaranja();
-        } else {
-            snake.pop();
-        }
-        snake.unshift(cabeza);
-    }
-
-    function nuevaNaranja() {
-        naranja.x = Math.floor(Math.random() * 20) * tamaño;
-        naranja.y = Math.floor(Math.random() * 20) * tamaño;
-    }
-
-    setInterval(dibujar, 150);
-</script>
+    <section>
+        <h2>Tarea 3 - Imagen</h2>
+        <img src="download.png" alt="Tarea 3 Imagen" width="300">
+    </section>
 
 </body>
 </html>
