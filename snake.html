@@ -1,110 +1,105 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Snake - Naranjas</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<title>Snake Game</title>
 
-        canvas {
-            border: 2px solid black;
-            background-color: #f2f2f2;
-        }
-    </style>
+<style>
+    body {
+        text-align: center;
+        background-color: #222;
+        color: white;
+        font-family: Arial;
+    }
+
+    canvas {
+        background-color: black;
+        margin-top: 20px;
+    }
+</style>
 </head>
+
 <body>
 
-<h1>Snake 🍊</h1>
+<h1>🐍 Snake</h1>
 <p>Usa las flechas del teclado</p>
 
-<canvas id="juego" width="400" height="400"></canvas>
+<canvas id="game" width="400" height="400"></canvas>
 
 <script>
-    // ===== CONFIGURACIÓN BÁSICA =====
-    const canvas = document.getElementById("juego");
-    const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-    const tamaño = 20; // tamaño de cada cuadro
-    let direccion = "derecha";
+let box = 20;
+let snake = [{x: 9 * box, y: 10 * box}];
+let food = {
+    x: Math.floor(Math.random() * 19) * box,
+    y: Math.floor(Math.random() * 19) * box
+};
 
-    // ===== SERPIENTE =====
-    let snake = [
-        { x: 200, y: 200 }
-    ];
+let direction;
 
-    // ===== NARANJA =====
-    let naranja = {
-        x: 100,
-        y: 100
-    };
+document.addEventListener("keydown", dir);
 
-    // ===== CONTROLES =====
-    document.addEventListener("keydown", cambiarDireccion);
+function dir(event) {
+    if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+    else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+    else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+    else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+}
 
-    function cambiarDireccion(evento) {
-        if (evento.key === "ArrowUp" && direccion !== "abajo") {
-            direccion = "arriba";
-        }
-        if (evento.key === "ArrowDown" && direccion !== "arriba") {
-            direccion = "abajo";
-        }
-        if (evento.key === "ArrowLeft" && direccion !== "derecha") {
-            direccion = "izquierda";
-        }
-        if (evento.key === "ArrowRight" && direccion !== "izquierda") {
-            direccion = "derecha";
+function draw() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 400, 400);
+
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i === 0) ? "lime" : "green";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if (direction === "LEFT") snakeX -= box;
+    if (direction === "UP") snakeY -= box;
+    if (direction === "RIGHT") snakeX += box;
+    if (direction === "DOWN") snakeY += box;
+
+    if (snakeX === food.x && snakeY === food.y) {
+        food = {
+            x: Math.floor(Math.random() * 19) * box,
+            y: Math.floor(Math.random() * 19) * box
+        };
+    } else {
+        snake.pop();
+    }
+
+    let newHead = {x: snakeX, y: snakeY};
+
+    // choque con paredes
+    if (
+        snakeX < 0 || snakeX >= 400 ||
+        snakeY < 0 || snakeY >= 400
+    ) {
+        clearInterval(game);
+        alert("Game Over");
+    }
+
+    // choque consigo misma
+    for (let i = 0; i < snake.length; i++) {
+        if (snakeX === snake[i].x && snakeY === snake[i].y) {
+            clearInterval(game);
+            alert("Game Over");
         }
     }
 
-    // ===== DIBUJAR TODO =====
-    function dibujar() {
-        // Limpia el canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    snake.unshift(newHead);
+}
 
-        // Dibuja la serpiente
-        ctx.fillStyle = "green";
-        snake.forEach(parte => {
-            ctx.fillRect(parte.x, parte.y, tamaño, tamaño);
-        });
-
-        // Dibuja la naranja
-        ctx.fillStyle = "orange";
-        ctx.fillRect(naranja.x, naranja.y, tamaño, tamaño);
-
-        moverSnake();
-    }
-
-    // ===== MOVER LA SERPIENTE =====
-    function moverSnake() {
-        let cabeza = { ...snake[0] };
-
-        if (direccion === "arriba") cabeza.y -= tamaño;
-        if (direccion === "abajo") cabeza.y += tamaño;
-        if (direccion === "izquierda") cabeza.x -= tamaño;
-        if (direccion === "derecha") cabeza.x += tamaño;
-
-        // Si come la naranja
-        if (cabeza.x === naranja.x && cabeza.y === naranja.y) {
-            nuevaNaranja();
-        } else {
-            snake.pop(); // quita la cola
-        }
-
-        snake.unshift(cabeza); // agrega nueva cabeza
-    }
-
-    // ===== NUEVA NARANJA =====
-    function nuevaNaranja() {
-        naranja.x = Math.floor(Math.random() * 20) * tamaño;
-        naranja.y = Math.floor(Math.random() * 20) * tamaño;
-    }
-
-    // ===== BUCLE DEL JUEGO =====
-    setInterval(dibujar, 150);
+let game = setInterval(draw, 100);
 </script>
 
 </body>
